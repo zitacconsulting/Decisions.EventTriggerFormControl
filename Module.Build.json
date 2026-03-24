@@ -1,0 +1,26 @@
+{
+    "Resources": {
+        "NoComponents": true,
+        "CoreServicesDlls": [
+            "./Decisions.EventTriggerFormControl/bin/Decisions.EventTriggerFormControl.dll"
+        ],
+        "ReferenceDlls": null,
+        "CustomImages": [
+            "PlatformEventTrigger.png"
+        ],
+        "CliDlls": null,
+        "WebPages": null,
+        "MvcScripts": [
+            "./Decisions.EventTriggerFormControl/MvcScripts/platform-event-trigger.js"
+        ],
+        "SilverlightDlls": null,
+        "AgentDlls": null,
+        "InstallScript": null,
+        "SqlScripts": null,
+        "ObjectsToImport": null,
+        "MsSqlScript": null
+    },
+    "Version": "9.21.0",
+    "ImagePath": "PlatformEventTrigger.png",
+    "Description": "Invisible form control that bridges server-side platform events (folder changes, report refresh) to Active Form Flows"
+}

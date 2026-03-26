@@ -7,30 +7,22 @@ namespace Decisions.EventTriggerFormControl;
 /// </summary>
 public enum PlatformEventType
 {
-    [Description("Folder Changed")]
-    FolderChanged,
-
+    /// <summary>
+    /// Fires when entities are created, updated, or deleted in the configured folder,
+    /// OR when a server-side flow explicitly sends a folder refresh signal for that folder.
+    /// </summary>
     [Description("Refresh By Folder")]
     RefreshByFolder,
 
+    /// <summary>
+    /// Fires when a server-side flow sends a named refresh signal (key).
+    /// </summary>
     [Description("Refresh By Key")]
     RefreshByKey,
 
+    /// <summary>
+    /// Fires when a server-side flow sends a named refresh signal (key) for a specific folder.
+    /// </summary>
     [Description("Refresh By Folder And Key")]
     RefreshByFolderAndKey,
-
-    /// <summary>
-    /// Fires when Business Data Type entities are created, updated, or deleted
-    /// directly inside the configured folder.
-    /// Equivalent to "Contained Entity Change" on page controls.
-    /// </summary>
-    [Description("Folder Contained Entity Changed")]
-    ContainedEntityChanged,
-
-    /// <summary>
-    /// Fires when Business Data Type entities are created, updated, or deleted
-    /// anywhere within the configured folder or any of its sub-folders.
-    /// </summary>
-    [Description("Folder Tree Contained Entity Changed")]
-    ContainedEntityChangedInTree,
 }

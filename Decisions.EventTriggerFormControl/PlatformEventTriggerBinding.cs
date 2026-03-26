@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.Serialization;
 using Decisions.Silverlight.UI.Forms;
 using DecisionsFramework.Data.ORMapper;
@@ -16,11 +15,12 @@ namespace Decisions.EventTriggerFormControl;
 [Writable]
 public class PlatformEventTriggerBinding : ISurfaceAware
 {
-    // Injected by PlatformEventTriggerControl so the folder picker can derive project
-    // context and show only the current project's folders. Not persisted (no [WritableValue]).
-    [PropertyHidden]
+    // Injected by PlatformEventTriggerControl so the folder picker can show
+    // the current project's folders. Implemented explicitly so it is not a
+    // public property — the AFF Build Data step won't enumerate it.
     [IgnoreDataMember]
-    public IFormSurface? Surface { get; set; }
+    private IFormSurface? _surface;
+    IFormSurface? ISurfaceAware.Surface { get => _surface; set => _surface = value; }
 
     /// <summary>Which platform event type to listen for.</summary>
     [WritableValue]
@@ -30,7 +30,6 @@ public class PlatformEventTriggerBinding : ISurfaceAware
     /// <summary>
     /// Optional. Only fire when the event's folder ID matches this folder.
     /// Leave empty to match any folder.
-    /// Applies to: FolderChanged, RefreshByFolder, RefreshByFolderAndKey, ContainedEntityChanged.
     /// </summary>
     [WritableValue]
     [PropertyClassification(1, "Folder Filter", "Trigger")]
@@ -45,36 +44,24 @@ public class PlatformEventTriggerBinding : ISurfaceAware
     /// </summary>
     [WritableValue]
     [PropertyClassification(2, "Key Filters", "Trigger")]
-    [PropertyHiddenByValue("EventType", PlatformEventType.FolderChanged, true)]
     [PropertyHiddenByValue("EventType", PlatformEventType.RefreshByFolder, true)]
-    [PropertyHiddenByValue("EventType", PlatformEventType.ContainedEntityChanged, true)]
-    [PropertyHiddenByValue("EventType", PlatformEventType.ContainedEntityChangedInTree, true)]
     public string[]? KeyFilters { get; set; }
-
-    /// <summary>
-    /// Minimum time that must elapse between successive firings of this binding.
-    /// Set to zero (default) to fire every time.
-    /// Mirrors the "Minimum Refresh Interval" behaviour on page controls.
-    /// </summary>
-    [WritableValue]
-    [PropertyClassification(3, "Minimum Refresh Interval", "Trigger")]
-    public TimeSpan MinimumRefreshInterval { get; set; } = TimeSpan.Zero;
 
     public override string ToString()
     {
-        string folderDisplay = "any folder";
+        string folderDisplay = string.Empty;
         if (!string.IsNullOrEmpty(FolderIdFilter))
         {
             try
             {
                 var folder = new ORM<Folder>().Fetch(FolderIdFilter);
-                folderDisplay = folder?.FolderName ?? FolderIdFilter;
+                folderDisplay = " (" + (folder?.FolderName ?? FolderIdFilter) + ")";
             }
             catch
             {
-                folderDisplay = FolderIdFilter;
+                folderDisplay = " (" + FolderIdFilter + ")";
             }
         }
-        return $"{EventType} ({folderDisplay})";
+        return $"{EventType}{folderDisplay}";
     }
 }

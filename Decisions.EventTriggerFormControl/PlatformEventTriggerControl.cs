@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.Json;
+using DecisionsFramework;
 using DecisionsFramework.ComponentData;
 using DecisionsFramework.Design.ConfigurationStorage.Attributes;
 using DecisionsFramework.Design.Flow.Mapping;
@@ -505,6 +506,15 @@ public class PlatformEventTriggerControl
     [PropertyHidden] public override bool StaticInput      { get => base.StaticInput;     set => base.StaticInput = value; }
     [PropertyHidden] public override bool OverrideRequiredMessage { get => base.OverrideRequiredMessage; set => base.OverrideRequiredMessage = value; }
     [PropertyHidden] public override bool OutputOnly { get => true; set { } }
+
+    // The base DataContentBase.GetValidationIssues() raises fatal errors when the
+    // form has no outcome paths ("No Outcome paths to select") or when none are
+    // marked Required/Optional. Our control fires AFFs via its own ValueChanged
+    // event — it has no dependency on form outcome paths — so we suppress those.
+    public override ValidationIssue[] GetValidationIssues() =>
+        base.GetValidationIssues()
+            .Where(v => v.ReferenceProperty != "OutcomePathsWithOutcomeType")
+            .ToArray();
 
     public override OutcomeScenarioData[] OutcomeScenarios => new[]
     {
